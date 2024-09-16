@@ -1,0 +1,408 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    @model BookStoreOnline.Models.Custom.DanhGiaContent
+    var price = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+    var user = Session["TaiKhoan"] as BookStoreOnline.Models.KHACHHANG;
+}
+<style>
+    body {
+        margin-top: 20px;
+        background-color: #e9ebee;
+    }
+
+    .be-comment-block {
+        margin-bottom: 50px !important;
+        border: 1px solid #edeff2;
+        border-radius: 2px;
+        padding: 50px 70px;
+        border: 1px solid #ffffff;
+    }
+
+    .comments-title {
+        font-size: 16px;
+        color: #262626;
+        margin-bottom: 15px;
+        font-family: 'Conv_helveticaneuecyr-bold';
+    }
+
+    .be-img-comment {
+        width: 60px;
+        height: 60px;
+        float: left;
+        margin-bottom: 15px;
+    }
+
+    .be-ava-comment {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+
+    .be-comment-content {
+        margin-left: 80px;
+    }
+
+        .be-comment-content span {
+            display: inline-block;
+            width: 49%;
+            margin-bottom: 15px;
+        }
+
+    .be-comment-name {
+        font-size: 13px;
+        font-family: 'Conv_helveticaneuecyr-bold';
+    }
+
+    .be-comment-content a {
+        color: #383b43;
+    }
+
+    .be-comment-content span {
+        display: inline-block;
+        width: 49%;
+        margin-bottom: 15px;
+    }
+
+    .be-comment-time {
+        text-align: right;
+    }
+
+    .be-comment-time {
+        font-size: 11px;
+        color: #b4b7c1;
+    }
+
+    .be-comment-text {
+        font-size: 13px;
+        line-height: 18px;
+        color: #7a8192;
+        display: block;
+        background: #f6f6f7;
+        border: 1px solid #edeff2;
+        padding: 15px 20px 20px 20px;
+    }
+
+    .form-group.fl_icon .icon {
+        position: absolute;
+        top: 1px;
+        left: 16px;
+        width: 48px;
+        height: 48px;
+        background: #f6f6f7;
+        color: #b5b8c2;
+        text-align: center;
+        line-height: 50px;
+        -webkit-border-top-left-radius: 2px;
+        -webkit-border-bottom-left-radius: 2px;
+        -moz-border-radius-topleft: 2px;
+        -moz-border-radius-bottomleft: 2px;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+    }
+
+    .form-group .form-input {
+        font-size: 13px;
+        line-height: 50px;
+        font-weight: 400;
+        color: #b4b7c1;
+        width: 100%;
+        height: 50px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 1px solid #edeff2;
+        border-radius: 3px;
+    }
+
+    .form-group.fl_icon .form-input {
+        padding-left: 70px;
+    }
+
+    .form-group textarea.form-input {
+        height: 150px;
+    }
+</style>
+<div class="container body-page mt-4">
+    <div class="row">
+        <div class="col-lg-5">
+            <img src="~/Images/@ViewBag.Book.Anh" class="img-fluid rounded shadow-sm" alt="Book Image">
+        </div>
+        <div class="col-lg-4">
+            <h3 class="font-weight-bold mb-3">@ViewBag.Book.TenSanPham</h3>
+            <h3 class="text-danger mb-3">@String.Format(price, "{0:c0}", ViewBag.Book.Gia)</h3>
+            <p>Tác giả: @ViewBag.Book.TacGia</p>
+            <div class="d-flex align-items-center mb-3">
+                @*<span>Đánh giá:</span>
+                <span class="text-warning ml-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                </span>*@
+            </div>
+            @if (user == null)
+            {
+                <div class="form-add-to-cart d-flex align-items-center">
+                    <input type="number" class="form-control mr-2" style="width: 80px;" value="1" min="1">
+                    <button class="btn btn-primary" onclick="location.href='@Url.Action("Login", "User")'">
+                        <i class="bi bi-bag-plus"></i> Thêm vào giỏ hàng
+                    </button>
+                </div>
+            }
+            else
+            {
+                using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { @class = "form-add-to-cart d-flex align-items-center" }))
+                {
+                    <input type="number" name="Quantity" class="form-control mr-2" style="width: 80px;" value="1" min="1">
+                    <input type="hidden" name="ProductID" value="@ViewBag.Book.MaSanPham" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-bag-plus"></i> Thêm vào giỏ hàng
+                    </button>
+                }
+            }
+        </div>
+        <div class="col-lg-3">
+            <h4 class="text-muted">Mô tả</h4>
+            <p>@ViewBag.Book.MoTa</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="more-some-book mt-5">
+        <h3 class="font-weight-bold">Đánh giá sách</h3>
+        @*<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">*@
+        <div class="container">
+            <div class="be-comment-block">
+
+                @foreach (var danhGia in ViewBag.DanhSachDanhGia)
+                {
+                    <div class="be-comment">
+                        <div class="be-img-comment">
+                            <a href="blog-detail-2.html">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="be-ava-comment">
+                            </a>
+                        </div>
+
+                        <div class="be-comment-content">
+
+                            <span class="be-comment-name">
+                                <a href="blog-detail-2.html">@danhGia.nguoiDanhGia</a>
+                            </span>
+                            <span class="be-comment-time">
+                                <i class="fa fa-clock-o"></i>
+                                @danhGia.danhGia.NgayTao
+                            </span>
+
+                            <p class="be-comment-text">
+                                @danhGia.danhGia.NoiDung
+                            </p>
+                        </div>
+
+                    </div>
+                }
+
+                 
+
+
+                    @if (user != null)
+                    {
+                        <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="bg-light p-2">
+                                @using (Html.BeginForm("PostDanhGia", "ProductDetail", FormMethod.Post, new { @class = "form-review" }))
+                                {
+                                    @Html.Hidden("MaSanPham", (int)ViewBag.MaSanPham)  
+                                    <div class="d-flex flex-row align-items-start">
+                                        <img class="rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar1.png" width="40">
+                                        @Html.TextAreaFor(m => m.NoiDungDanhGia, new { @class = "form-control ml-1 shadow-none textarea", placeholder = "Enter your review..." })
+                                    </div>
+                                    <div class="mt-2 text-right">
+                                        <button class="btn btn-primary btn-sm shadow-none" type="submit">Đánh giá</button>
+                                        <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="reset">Quay lại</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+            </div> 
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="more-some-book mt-5">
+        <h3 class="font-weight-bold">Khám phá thêm</h3>
+        <hr />
+        <div class="row">
+            @foreach (var item in ViewBag.MoreBook)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        <a href="@Url.Action("Index/"+ item.MaSanPham,"ProductDetail")">
+                            <img class="card-img-top img-fluid rounded-top" src="~/Images/@item.Anh" alt="Card image cap">
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <a href="@Url.Action("Index/"+ item.MaSanPham,"ProductDetail")" class="title-prod text-dark text-decoration-none">
+                                <h5 class="card-title">@item.TenSanPham</h5>
+                            </a>
+                            <h5 class="text-danger mb-3">@String.Format(price, "{0:c0}", item.Gia)</h5>
+                            <p class="card-text rating-card mb-4">
+                                @*<i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span style="color: black;">(0 đánh giá)</span>*@
+                            </p>
+                            @if (user != null)
+                            {
+                                <a href="@Url.Action("AddSingleProduct/"+ item.MaSanPham,"Cart")" class="btn btn-success mt-auto">Mua Ngay</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Login", "User")" class="btn btn-primary">Mua Ngay</a>
+                            }
+                            <a href="@Url.Action("Index/"+ item.MaSanPham,"ProductDetail")" class="btn btn-outline-secondary mt-2">
+                                <i class="bi bi-eye"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <div class="row justify-content-center mt-4">
+        <a href="@Url.Action("GetAllBook", "Category")" class="see-more">
+            <h4>Xem thêm</h4>
+        </a>
+    </div>
+</div>
+
+</div>
+
+
+
+<!-- Thêm một số CSS tùy chỉnh để làm đẹp giao diện -->
+<style>
+    .container.body-page {
+        margin-top: 20px;
+    }
+
+    .card {
+        transition: transform 0.2s;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .text-danger {
+        color: red !important;
+    }
+
+    .text-success {
+        color: green !important;
+    }
+
+    .img-fluid {
+        border-radius: 8px;
+    }
+
+    .form-add-to-cart {
+        margin-top: 20px;
+    }
+
+    .more-some-book h3 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .title-prod {
+        text-decoration: none;
+        color: black;
+    }
+
+        .title-prod:hover {
+            text-decoration: underline;
+        }
+
+    .custom-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 18px;
+        display: inline-block;
+    }
+
+        .custom-btn:hover {
+            background-color: #218838;
+            color: #fff;
+        }
+
+    .see-detail-prod {
+        display: inline-block;
+        margin-top: 10px;
+        color: #007bff;
+    }
+
+        .see-detail-prod:hover {
+            color: #0056b3;
+        }
+
+    .btn-outline-secondary {
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 18px;
+        text-decoration: none;
+        color: #6c757d;
+        border: 1px solid #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #e2e6ea;
+            color: #495057;
+            border: 1px solid #6c757d;
+        }
+</style>
