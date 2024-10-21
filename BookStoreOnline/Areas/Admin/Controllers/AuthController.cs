@@ -23,12 +23,20 @@ namespace BookStoreOnline.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Login(LoginViewModel taikhoan)
+        public ActionResult Login(LoginViewModel taikhoan, NHANVIEN nv)
         {
             if (ModelState.IsValid)
             {
-                string matKhau = Extension.GetMd5Hash(taikhoan.Password);
+                // Kiểm tra định dạng email
+                if (string.IsNullOrEmpty(nv.Email) || !nv.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewBag.ThongBaoEmail = "Email phải có định dạng @gmail.com";
+                    return View();
+                }
 
+
+                // Mã hóa mật khẩu và kiểm tra thông tin đăng nhập
+                string matKhau = Extension.GetMd5Hash(taikhoan.Password);
                 var account = db.NHANVIENs.FirstOrDefault(k => k.Email == taikhoan.Email && k.MatKhau == matKhau);
                 if (account != null)
                 {
@@ -37,14 +45,14 @@ namespace BookStoreOnline.Areas.Admin.Controllers
                 }
                 else
                 {
-
                     ModelState.AddModelError("", "Tài khoản hoặc mật khẩu không chính xác!");
                 }
             }
 
-            // If we got this far, something failed, redisplay the form
+            // Nếu có lỗi, hiển thị lại form đăng nhập
             return View(taikhoan);
         }
+
         public ActionResult Logout()
         {
             Session["TaiKhoan"] = null;

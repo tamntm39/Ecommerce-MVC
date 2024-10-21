@@ -61,6 +61,34 @@ namespace BookStoreOnline.Controllers
         public ActionResult SignUp(KHACHHANG cus, string rePass)
         {
             if (ModelState.IsValid)
+                // Kiểm tra định dạng email
+                if (string.IsNullOrEmpty(cus.Email) || !cus.Email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewBag.ThongBaoEmail = "Email phải có định dạng @gmail.com";
+                    return View();
+                }
+
+            // Kiểm tra số điện thoại phải đủ 10 số
+            if (cus.SoDienThoai == null || cus.SoDienThoai.Length != 10 || !cus.SoDienThoai.All(char.IsDigit))
+            {
+                ViewBag.ThongBaoSDT = "Số điện thoại phải là 10 chữ số";
+                return View();
+            }
+
+            // Kiểm tra tên phải trên 5 ký tự
+            if (cus.Ten == null || cus.Ten.Length <= 5)
+            {
+                ViewBag.ThongBaoTen = "Tên phải có độ dài trên 5 ký tự";
+                return View();
+            }
+
+            // Kiểm tra mật khẩu phải có ít nhất 1 chữ cái in hoa và 1 ký tự đặc biệt
+            //if (!cus.MatKhau.Any(char.IsUpper) || !cus.MatKhau.Any(ch => !char.IsLetterOrDigit(ch)))
+            //{
+            //    ViewBag.ThongBaoMatKhau = "Mật khẩu phải có ít nhất 1 chữ cái in hoa và 1 ký tự đặc biệt";
+            //    return View();
+            //}
+
             {
                 var checkEmail = db.KHACHHANGs.FirstOrDefault(c => c.Email == cus.Email);
                 if (checkEmail != null)
